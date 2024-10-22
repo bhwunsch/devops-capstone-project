@@ -195,8 +195,8 @@ class TestAccountService(TestCase):
         #check that updated account != created data
         self.assertNotEqual(account.name, updated_account["name"])
         
-def test_bad_update(self):
-        """It should change update an account"""
+    def test_bad_update(self):
+        """It should fail to update an account using a bogus id"""
         #create an account
         account = self._create_accounts(1)[0]
         #find the account
@@ -218,27 +218,13 @@ def test_bad_update(self):
         #make modification to found data
         found_account["name"] = "Cyrano"
 
+        #give bogus id
+        found_account["id"] = account.id + 9999
+
         #update()
         resp = self.client.put(
             f'{BASE_URL}/{found_account["id"]}', 
             content_type="application/json",
             json = found_account
         )
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        
-        #find the updated account - same id
-        resp = self.client.get(
-            f"{BASE_URL}/{account.id}", content_type="application/json"
-        )
-        if resp.status_code == status.HTTP_404_NOT_FOUND:
-            print('test_update, updated account not found')
-        
-        updated_account = resp.get_json()
-
-        #check that updated account = modified found data
-        self.assertEqual(account.id, updated_account["id"])
-        self.assertEqual(found_account["id"], updated_account["id"])
-        self.assertEqual(found_account["name"], updated_account["name"])
-
-        #check that updated account != created data
-        self.assertNotEqual(account.name, updated_account["name"])
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
