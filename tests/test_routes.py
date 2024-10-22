@@ -146,3 +146,99 @@ class TestAccountService(TestCase):
             f"{BASE_URL}/{bad_id}", content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update(self):
+        """It should change update an account"""
+        #create an account
+        account = self._create_accounts(1)[0]
+        #find the account
+        resp = self.client.get(
+            f"{BASE_URL}/{account.id}", content_type="application/json"
+        )
+        if resp.status_code == status.HTTP_404_NOT_FOUND:
+            print('test_update, account not found')
+        else:
+            self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        #get data from found account
+        found_account = resp.get_json()
+        
+        #check found data is same as created data
+        self.assertEqual(account.id, found_account["id"])
+        self.assertEqual(account.name, found_account["name"])
+        
+        #make modification to found data
+        found_account["name"] = "Cyrano"
+
+        #update()
+        resp = self.client.put(
+            f'{BASE_URL}/{found_account["id"]}', 
+            content_type="application/json",
+            json = found_account
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        
+        #find the updated account - same id
+        resp = self.client.get(
+            f"{BASE_URL}/{account.id}", content_type="application/json"
+        )
+        if resp.status_code == status.HTTP_404_NOT_FOUND:
+            print('test_update, updated account not found')
+        
+        updated_account = resp.get_json()
+
+        #check that updated account = modified found data
+        self.assertEqual(account.id, updated_account["id"])
+        self.assertEqual(found_account["id"], updated_account["id"])
+        self.assertEqual(found_account["name"], updated_account["name"])
+
+        #check that updated account != created data
+        self.assertNotEqual(account.name, updated_account["name"])
+        
+def test_bad_update(self):
+        """It should change update an account"""
+        #create an account
+        account = self._create_accounts(1)[0]
+        #find the account
+        resp = self.client.get(
+            f"{BASE_URL}/{account.id}", content_type="application/json"
+        )
+        if resp.status_code == status.HTTP_404_NOT_FOUND:
+            print('test_update, account not found')
+        else:
+            self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        #get data from found account
+        found_account = resp.get_json()
+        
+        #check found data is same as created data
+        self.assertEqual(account.id, found_account["id"])
+        self.assertEqual(account.name, found_account["name"])
+        
+        #make modification to found data
+        found_account["name"] = "Cyrano"
+
+        #update()
+        resp = self.client.put(
+            f'{BASE_URL}/{found_account["id"]}', 
+            content_type="application/json",
+            json = found_account
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        
+        #find the updated account - same id
+        resp = self.client.get(
+            f"{BASE_URL}/{account.id}", content_type="application/json"
+        )
+        if resp.status_code == status.HTTP_404_NOT_FOUND:
+            print('test_update, updated account not found')
+        
+        updated_account = resp.get_json()
+
+        #check that updated account = modified found data
+        self.assertEqual(account.id, updated_account["id"])
+        self.assertEqual(found_account["id"], updated_account["id"])
+        self.assertEqual(found_account["name"], updated_account["name"])
+
+        #check that updated account != created data
+        self.assertNotEqual(account.name, updated_account["name"])
