@@ -125,21 +125,24 @@ class TestAccountService(TestCase):
 
     def test_read(self):
         """It should read an account"""
-        #create an account
-        account = AccountFactory()
-        response = self.client.post(
-            BASE_URL,
-            json=account.serialize(),
-            content_type="application/json"
+        account = self._create_accounts(1)[0]
+        resp = self.client.get(
+            f"{BASE_URL}/{account.id}", content_type="application/json"
         )
-        #check its made
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
-        #store the account's id
-        account_id = account.id
-        
-        #query for the account by id
-        response = self.client.get(
-            
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["name"], account.name)
+
+    def test_bad_read(self):
+        """It should fail to read a bad account id"""
+        account = self._create_accounts(1)[0]
+        resp = self.client.get(
+            f"{BASE_URL}/{account.id}", content_type="application/json"
         )
-        #check its the correct account read
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        #check for it to fail finding an account, use a bad id
+        bad_id = 2222
+        resp = self.client.get(
+            f"{BASE_URL}/{bad_id}", content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
