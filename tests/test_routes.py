@@ -271,3 +271,10 @@ class TestAccountService(TestCase):
         #out of curiosity, is the data returned the same order as when accounts created?
         for i in range(len(data)):
             self.assertEqual(data[i]["name"], accounts[i].name)
+    
+    def test_method_not_allowed(self):
+        """It should show method not allowed"""
+        resp = self.client.put(
+            BASE_URL, content_type = "application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)

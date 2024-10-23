@@ -1,0 +1,13 @@
+What went right?
+* read through entire project code so new somewhat how it all fit together
+* do see how API routes connect to the core "model" program
+* got most of tests/code written in a single day
+
+What went wrong?
+* still don't fully grasp how flask is sending/receiving information
+* still don't fully grasp how the payloads work when sending requests
+* I go too fast, don't double check work before I try running
+* I am using code chatbots too much
+
+What would you change for the next sprint?
+* need to understand 
