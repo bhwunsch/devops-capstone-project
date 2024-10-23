@@ -255,15 +255,19 @@ class TestAccountService(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_list(self):
-        """Should return all accounts in database"""
+        """It should return all accounts in database"""
         #create an array of accounts
-        accounts = self._create_accounts(22)
+        accounts = self._create_accounts(3)
         accounts_size = len(accounts)
 
         #get list of all arrays in database
         resp = self.client.get(
-            {BASE_URL}, content_type="application/json"
+            BASE_URL, content_type = "application/json"
         )
         data = resp.get_json()
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertEqual(len(data), accounts_size)
+
+        #out of curiosity, is the data returned the same order as when accounts created?
+        for i in range(len(data)):
+            self.assertEqual(data[i]["name"], accounts[i].name)
