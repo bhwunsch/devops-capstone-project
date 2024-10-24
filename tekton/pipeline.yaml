@@ -38,20 +38,6 @@ spec:
       runAfter:
         - init
 
-    - name: lint
-      workspaces:
-        - name: source
-          workspace: pipeline-workspace          
-      taskRef:
-        name: flake8
-      params:
-      - name: image
-        value: python:3.9-slim
-      - name: args
-        value: ["--count", "--max-complexity=10", "--max-line-length=127", "--statistics", "--exit-zero"]
-      runAfter:
-        - clone
-
     - name: tests
       workspaces:
         - name: source
@@ -65,6 +51,21 @@ spec:
         value: "-v --with-spec --spec-color"
       runAfter:
         - clone
+
+    #run lint after nose, as the nose task loads flake8 as part of requirements
+    - name: lint
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace          
+      taskRef:
+        name: flake8
+      params:
+      - name: image
+        value: python:3.9-slim
+      - name: args
+        value: ["--count", "--max-complexity=10", "--max-line-length=127", "--statistics", "--exit-zero"]
+      runAfter:
+        - tests
 
     - name: build
       workspaces:
