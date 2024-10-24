@@ -53,7 +53,7 @@ spec:
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: test
+  name: nose
 spec:
   description: Use nose to code check TDD
   workspaces:
