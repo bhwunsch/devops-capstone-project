@@ -82,4 +82,22 @@ spec:
         pip install -qr requirements.txt
         echo "/\/\/\____running nosetests with: $(params.args)"
         nosetests $(params.args)
-        
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: install-git-clone
+spec:
+  description: Automate the installation of Tekton git-clone task
+  workspaces:
+    - name: source
+  steps:
+    - name: install-git-clone
+      image: bitnami/kubectl:latest  # Or a custom image with tkn installed
+      workingDir: $(workspaces.source.path)
+      script: |
+        #!/bin/bash
+        set -e
+        echo "Installing git-clone task from Tekton Hub"
+        tkn hub install task git-clone
+

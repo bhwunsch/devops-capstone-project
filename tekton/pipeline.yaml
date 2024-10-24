@@ -24,6 +24,15 @@ spec:
       taskRef:
         name: cleanup
 
+    - name: git-clone
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+      taskRef:
+        name: install-git-clone
+      runAfter:
+        - init
+
     - name: clone
       workspaces:
         - name: output
