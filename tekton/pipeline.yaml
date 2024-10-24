@@ -23,6 +23,19 @@ spec:
       taskRef:
         name: cleanup
 
+    - name: install-git-clone
+      taskSpec:
+        steps:
+          - name: install-git-clone
+            image: bitnami/kubectl:latest  # Ensure the image has the `tkn` or `kubectl` binary
+            script: |
+              tkn hub install task git-clone
+      workspaces:
+        - name: output
+          workspace: pipeline-workspace
+      runAfter:
+        - init
+
     - name: clone
       workspaces:
         - name: output
@@ -35,7 +48,25 @@ spec:
       - name: revision
         value: $(params.branch)
       runAfter:
-        - init
+        - install-git-clone
+
+    - name: install-flake8
+      taskSpec:
+        steps:
+          - name: install-flake8
+            image: bitnami/kubectl:latest
+            script: |
+              if ! tkn hub get task flake8; then
+                tkn hub install task flake8
+              else
+                echo "flake8 task is already installed."
+              fi
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+      runAfter:
+        - clone
+
 
     - name: lint
       workspaces:
